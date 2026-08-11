@@ -33,7 +33,7 @@
   const top = el("ex-top");
   top.innerHTML = wordmark(false) + `<span class="ex-src mono">TÜİK · TCMB İLE DENETLENDİ</span>`;
   const foot = el("ex-foot");
-  foot.innerHTML = wordmark(true) + `<span class="url">okilicarslan.github.io/on-record</span>`;
+  foot.innerHTML = wordmark(true) + `<span class="url">drinancsozer.com</span>`;
 
   const main = el("ex-main");
   stage.appendChild(top); stage.appendChild(main); stage.appendChild(foot);
