@@ -65,7 +65,7 @@
       fc = el("path", { class: "fc-star", d: starPath(hx, fY, 12), opacity: 0 });
       svg.appendChild(fc);
       // one consolidated callout in the right margin (no overlapping micro-labels)
-      const rows = [{ k: "İ.S. DEDİ", v: call.forecast_num != null ? fmt(ind, call.forecast_num) : (call.forecast_label || ""), c: "#5B9DFF" }];
+      const rows = [{ k: "İAS DEMİŞTİ", v: call.forecast_num != null ? fmt(ind, call.forecast_num) : (call.forecast_label || ""), c: "#5B9DFF" }];
       if (call.realised_num != null) rows.push({ k: "GERÇEKLEŞEN", v: fmt(ind, call.realised_num), c: VCOLOR[call.verdict] });
       if (call.consensus != null) rows.push({ k: "PİYASA", v: fmt(ind, call.consensus), c: "#7C8CA5" });
       const cx0 = hx + 30, cw = Math.max(214, W - 14 - cx0), rowH = 52, coPad = 18, ch = rows.length * rowH + coPad;
@@ -106,7 +106,7 @@
       // forecast star (his frozen call) + label (left)
       fc = el("path", { class: "fc-star", d: starPath(hx, fY, 9), opacity: 0 });
       fcl = el("text", { class: "fc-lbl", x: hx - 14, y: fY - 12, "text-anchor": "end", opacity: 0 });
-      fcl.textContent = "İ.S. dedi: " + (call.forecast_num != null ? fmt(ind, call.forecast_num) : (call.forecast_label || ""));
+      fcl.textContent = "İAS demişti: " + (call.forecast_num != null ? fmt(ind, call.forecast_num) : (call.forecast_label || ""));
       svg.appendChild(fc); svg.appendChild(fcl);
       // realised dot + label (right)
       if (call.realised_num != null) {
@@ -191,14 +191,20 @@
     document.getElementById("heroProv").innerHTML = `<b>Söz:</b> ${call.outlet}, ${call.stated_date} &nbsp;·&nbsp; <b>Gerçekleşen:</b> ${SRC[call.indicator]} — ${SERIES_LABEL[call.indicator]}, ${call.horizon_period}`;
     const c = chart(call, 800, 550);
     document.getElementById("heroChart").appendChild(c.svg);
-    setTimeout(c.animate, 300);
+    window.__heroAnimate = c.animate;   // fired once the gift-gate hands off (or immediately if skipped)
   }
 
   function stats() {
     const matured = D.calls.filter(c => !["pending", "na"].includes(c.verdict));
     const dirRight = matured.filter(c => c.verdict !== "off").length;
-    const items = [[D.meta.bullseyes, "tam isabet", "c"], [dirRight + "/" + matured.length, "yönü doğru bildi", "g"], ["2", "kez piyasayı yendi", ""], [matured.length, "denetlenen çağrı", ""]];
-    document.getElementById("stats").innerHTML = items.map(([n, l, cl]) => `<div class="stat"><div class="n ${cl}">${n}</div><div class="l">${l}</div></div>`).join("");
+    const items = [
+      { to: D.meta.bullseyes, tmpl: "{n}", l: "tam isabet", cl: "c" },
+      { to: dirRight, tmpl: "{n}/" + matured.length, l: "yönü doğru bildi", cl: "g" },
+      { to: 2, tmpl: "{n}", l: "kez piyasayı yendi", cl: "" },
+      { to: matured.length, tmpl: "{n}", l: "denetlenen çağrı", cl: "" },
+    ];
+    document.getElementById("stats").innerHTML = items.map(it =>
+      `<div class="stat"><div class="n ${it.cl}" data-to="${it.to}" data-tmpl="${it.tmpl}">${it.tmpl.replace("{n}", reduce ? it.to : 0)}</div><div class="l">${it.l}</div></div>`).join("");
   }
 
   function showcase() {
@@ -240,7 +246,7 @@
 
   function ledger() {
     const t = document.getElementById("ledger");
-    t.innerHTML = `<div class="lrow head"><div>TARİH</div><div>GÖSTERGE</div><div>DEDİĞİ → GERÇEKLEŞEN</div><div>SONUÇ</div></div>`;
+    t.innerHTML = `<div class="lrow head"><div>TARİH</div><div>GÖSTERGE</div><div>İAS DEMİŞTİ → GERÇEKLEŞEN</div><div>SONUÇ</div></div>`;
     D.calls.slice().sort((a, b) => b.stated_date < a.stated_date ? -1 : 1).forEach(c => {
       const row = document.createElement("div"); row.className = "lrow" + (c.weakest ? " weakest" : "");
       row.innerHTML = `<div class="date">${c.stated_date}${c.weakest ? '<div class="weak-tag">★ en zayıf</div>' : ""}</div>
@@ -251,9 +257,144 @@
     });
   }
 
+  // ---- animate-everything: count-up + scroll reveals ----
+  function animateCount(tile) {
+    const n = tile.querySelector(".n[data-to]"); if (!n) return;
+    const to = +n.dataset.to, tmpl = n.dataset.tmpl, dur = 950, t0 = performance.now();
+    (function tick(now) {
+      const p = Math.min(1, (now - t0) / dur), v = Math.round(to * (1 - Math.pow(1 - p, 3)));
+      n.textContent = tmpl.replace("{n}", v); if (p < 1) requestAnimationFrame(tick);
+    })(t0);
+  }
+  function markReveal(el, delay) { el.classList.add("reveal"); if (delay) el.style.transitionDelay = delay + "ms"; }
+  function setupReveals() {
+    if (reduce) return;   // reduced motion: leave everything visible, no reveal hiding
+    document.querySelectorAll(".thesis-lead,.thesis-note,.section-head,.m-card").forEach(el => markReveal(el, 0));
+    document.querySelectorAll("#stats .stat").forEach((el, i) => markReveal(el, i * 80));
+    document.querySelectorAll("#ledger .lrow:not(.head)").forEach((el, i) => markReveal(el, Math.min(i, 10) * 45));
+    const io = new IntersectionObserver((ents) => ents.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add("in"); if (e.target.matches(".stat")) animateCount(e.target); io.unobserve(e.target); }
+    }), { threshold: .2, rootMargin: "0px 0px -6% 0px" });
+    document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+  }
+
+  // ---- gift-opening overlay: "Makbuz — Ben Sakladım" ----
+  const DED = "İnanç,\nbunu yıllardır sen söylüyordun. Ben sadece kayda geçirdim.\nPiyasa şaştı, sen şaşmadın.\n— Ömer";
+  function sealSVG(px) {
+    return `<svg viewBox="0 0 100 100" width="${px}" height="${px}" aria-hidden="true">
+      <circle cx="50" cy="50" r="34" fill="none" stroke="#00C08B" stroke-width="2.4"/>
+      <circle cx="50" cy="50" r="29" fill="none" stroke="#00C08B" stroke-width="1" stroke-dasharray="2 4" opacity=".55"/>
+      <text x="50" y="30" text-anchor="middle" font-family="var(--mono)" font-size="6" letter-spacing="2" fill="#00C08B">· TÜİK · TCMB ·</text>
+      <text x="50" y="55" text-anchor="middle" font-family="var(--display)" font-weight="900" font-size="11.5" letter-spacing=".5" fill="#00C08B">DOĞRULANDI</text>
+      <path d="M40 63 l6 6 l14 -15" fill="none" stroke="#00C08B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+  }
+  function sparkSVG() {
+    return `<svg viewBox="0 0 92 30" width="92" height="30" aria-hidden="true"><polyline points="2,24 18,20 34,22 50,12 66,15 82,4"
+      fill="none" stroke="#C79A3A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="82" cy="4" r="2.6" fill="#00A277"/></svg>`;
+  }
+  function receiptsHTML() {
+    const cards = [["Kas 2020", "%15"], ["Eyl 2021", "%19,6"], ["Ara 2024", "%44,4"], ["Eyl 2025", "−250bp"], ["Oca 2026", "%37"]];
+    return cards.map((c, i) => `<div class="rc" style="--tx:${(i - 2) * 52}px;--rot:${-10 + i * 5}deg;--tz:${-44 + i * 24}px;--d:${i * 90}ms">
+      <div class="rc-date">${c[0]}</div><div class="rc-spark">${sparkSVG()}</div><div class="rc-val">${c[1]}</div></div>`).join("");
+  }
+  function typeOn(node, text, cps) {
+    const lines = text.split("\n"); node.innerHTML = ""; let i = 0; const flat = text;
+    const caret = document.createElement("span"); caret.className = "caret"; caret.textContent = "▍";
+    node.appendChild(caret);
+    const timer = setInterval(() => {
+      i++;
+      const shown = flat.slice(0, i);
+      node.innerHTML = shown.replace(/\n/g, "<br>").replace("— Ömer", '<span class="sig">— Ömer</span>') + '<span class="caret">▍</span>';
+      if (i >= flat.length) { clearInterval(timer); node.querySelector(".caret") && node.querySelector(".caret").remove(); }
+    }, cps);
+    return timer;
+  }
+  function gateCountUp(o) {
+    o.querySelectorAll(".gg-caption [data-to]").forEach(s => {
+      const to = +s.dataset.to, t0 = performance.now();
+      (function tk(now) { const p = Math.min(1, (now - t0) / 700); s.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(tk); })(t0);
+    });
+  }
+  function runGiftGate(done) {
+    const matured = D.calls.filter(c => !["pending", "na"].includes(c.verdict)).length;
+    const dirRight = D.calls.filter(c => !["pending", "na"].includes(c.verdict) && c.verdict !== "off").length;
+    document.body.classList.add("gate-lock");
+    const o = document.createElement("div"); o.id = "giftgate"; o.setAttribute("role", "dialog"); o.setAttribute("aria-label", "Açılış");
+    o.innerHTML = `
+      <div class="gg-grid"></div><div class="gg-aura"></div><div class="gg-scan"></div>
+      <div class="gg-live"><span class="gg-dot"></span>ARŞİV · <span class="gg-tc">00:00:00</span></div>
+      <button class="gg-skip" type="button">Geç ↦</button>
+      <div class="gg-stage">
+        <div class="gg-forwho wipe">İnanç için</div>
+        <div class="gg-rule"></div>
+        <div class="gg-reason">
+          <span class="l wipe">Yıllardır söylüyordun.</span>
+          <span class="l wipe">Kimse fişini saklamadı.</span>
+          <span class="l wipe hot"><b>Ben sakladım.</b></span>
+        </div>
+        <div class="gg-proof">
+          <div class="gg-receipts">${receiptsHTML()}</div>
+          <div class="gg-seal">${sealSVG(120)}</div>
+          <div class="gg-caption"><span data-to="${D.meta.bullseyes}">0</span> tam isabet&nbsp;&nbsp;·&nbsp;&nbsp;piyasayı <span data-to="2">0</span> kez geçti&nbsp;&nbsp;·&nbsp;&nbsp;<span data-to="${dirRight}">0</span>/${matured} çağrıda yön doğru</div>
+        </div>
+        <div class="gg-ded"></div>
+        <div class="gg-title wipe">
+          <span class="wordmark"><span>ON</span> RECORD</span>
+          <div class="gg-tag">SÖYLEM <span>×</span> GERÇEKLEŞEN</div>
+          <div class="gg-by">Dr. İnanç Sözer · TÜİK · TCMB ile denetlendi</div>
+        </div>
+      </div>`;
+    document.body.appendChild(o);
+    const q = s => o.querySelector(s);
+    // cursor parallax — the scene tilts like a hologram you look around
+    const stage = q(".gg-stage");
+    o.addEventListener("mousemove", e => {
+      const r = o.getBoundingClientRect();
+      stage.style.setProperty("--px", ((e.clientX / r.width - .5) * 12).toFixed(2) + "deg");
+      stage.style.setProperty("--py", ((.5 - e.clientY / r.height) * 8).toFixed(2) + "deg");
+    });
+    const tcEl = q(".gg-tc"), t0 = performance.now();
+    const tcTimer = setInterval(() => { const s = Math.floor((performance.now() - t0) / 1000); tcEl.textContent = "00:00:" + String(s).padStart(2, "0"); }, 250);
+    const timers = []; let done_ = false;
+    const at = (ms, fn) => timers.push(setTimeout(fn, ms));
+
+    at(40, () => o.classList.add("in"));
+    at(120, () => q(".gg-live").classList.add("show"));
+    at(220, () => q(".gg-rule").classList.add("draw"));
+    at(680, () => q(".gg-forwho").classList.add("show"));
+    at(1120, () => o.querySelectorAll(".gg-reason .l")[0].classList.add("show"));
+    at(1470, () => o.querySelectorAll(".gg-reason .l")[1].classList.add("show"));
+    at(1820, () => o.querySelectorAll(".gg-reason .l")[2].classList.add("show"));
+    at(2600, () => { q(".gg-reason").classList.add("mini"); q(".gg-forwho").classList.add("mini"); q(".gg-proof").classList.add("show"); o.querySelectorAll(".rc").forEach(c => c.classList.add("in")); });
+    at(3150, () => { q(".gg-caption").classList.add("show"); gateCountUp(o); });
+    at(3520, () => { q(".gg-seal").classList.add("thunk"); o.classList.add("bloom", "shake"); });
+    at(3720, () => o.classList.remove("bloom", "shake"));
+    at(4200, () => { q(".gg-reason").classList.add("gone"); q(".gg-forwho").classList.add("gone"); q(".gg-proof").classList.add("gone"); const d = q(".gg-ded"); d.classList.add("show"); typeOn(d, DED, 32); });
+    at(6250, () => { q(".gg-ded").classList.add("gone"); q(".gg-title").classList.add("show"); });
+    at(7500, finish);
+
+    function finish() {
+      if (done_) return; done_ = true;
+      timers.forEach(clearTimeout); clearInterval(tcTimer);
+      o.classList.add("out"); try { sessionStorage.setItem("onrecord_opened", "1"); } catch (e) {}
+      setTimeout(() => { o.remove(); done && done(); }, 600);
+    }
+    q(".gg-skip").addEventListener("click", finish);
+    document.addEventListener("keydown", e => { if (e.key === "Escape") finish(); }, { once: true });
+  }
+  function startHero() { document.body.classList.remove("gate-lock"); if (window.__heroAnimate) window.__heroAnimate(); }
+
   // Expose the engine so the export studio reuses the exact same chart/seal code (no drift).
   window.OR_ENGINE = { chart, seek, makeSeal, bigNumbers, byId, fmt, prd, windowOf, VLABEL, VCOLOR, SERIES_LABEL, SRC, D };
 
   // Only auto-populate when we're on the main page (export.html has no #heroChart).
-  if (document.getElementById("heroChart")) { hero(); stats(); showcase(); ledger(); }
+  if (document.getElementById("heroChart")) {
+    hero(); stats(); showcase(); ledger(); setupReveals();
+    let opened = false; try { opened = sessionStorage.getItem("onrecord_opened"); } catch (e) {}
+    if (reduce || opened) startHero();          // reduced-motion / return visit → straight to hero
+    else runGiftGate(startHero);
+    const replay = document.getElementById("replayOpen");
+    if (replay) replay.addEventListener("click", () => runGiftGate(startHero));
+  }
 })();

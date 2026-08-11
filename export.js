@@ -14,7 +14,7 @@
   if (id === "summary") stage.classList.add("k-summary");
 
   // chart viewBox tuned per format so it fills its mount with minimal letterboxing
-  const VB = { "16x9": { w: 900, h: 700 }, "1x1": { w: 960, h: 540 }, "9x16": { w: 900, h: 720 } }[fmt];
+  const VB = { "16x9": { w: 900, h: 700 }, "1x1": { w: 960, h: 540 }, "9x16": { w: 900, h: 720 }, "og": { w: 900, h: 540 } }[fmt];
 
   // Hand-crafted broadcast headlines for the showcase calls; template fallback otherwise.
   const HEAD = {
@@ -89,7 +89,7 @@
     const said2 = call.forecast_num != null ? E.fmt(call.indicator, call.forecast_num) : call.forecast_label;
     const panel = el("ex-numbers");
     panel.innerHTML =
-      `<div class="ex-col"><span class="k">DEDİĞİ</span><span class="v" style="color:var(--dir)">${said2}</span></div>` +
+      `<div class="ex-col"><span class="k">İAS DEMİŞTİ</span><span class="v" style="color:var(--dir)">${said2}</span></div>` +
       `<div class="ex-arrow">→</div>` +
       `<div class="ex-col"><span class="k">GERÇEKLEŞEN</span><span class="v" style="color:${E.VCOLOR[call.verdict]}">${call.realised_label}</span></div>`;
     mount.appendChild(panel);

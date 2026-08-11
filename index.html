@@ -5,13 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>On Record — İnanç Sözer · Söylem × Gerçekleşen</title>
 <meta name="description" content="Dr. İnanç Sözer'in makro çağrıları, resmî TÜİK/TCMB verisiyle tek tek denetlendi. Söylediği tarih damgalı; gerçekleşen üstüne oturuyor." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://okilicarslan.github.io/on-record/" />
+<meta property="og:title" content="İnanç için — On Record" />
+<meta property="og:description" content="Yıllardır söyledin. Fişini ben sakladım. Beş tam isabet, on çağrının dokuzunda yön doğru — TÜİK ve TCMB ile denetlendi. Doğrulanmış, tarihli, senin." />
+<meta property="og:image" content="https://okilicarslan.github.io/on-record/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="İnanç için — On Record" />
+<meta name="twitter:description" content="Söylem × Gerçekleşen — doğrulanmış makro çağrıları. Doğrulanmış, tarihli, senin." />
+<meta name="twitter:image" content="https://okilicarslan.github.io/on-record/og.png" />
+<!-- installable app (Add to Home Screen) -->
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#0A1730" />
+<link rel="icon" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="On Record" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="gift.css" />
 </head>
 <body>
 <div class="grain" aria-hidden="true"></div>
+<div class="live-badge" aria-hidden="true"><span class="gg-dot"></span>CANLI ARŞİV</div>
 
 <header class="topbar">
   <div class="wordmark"><span>ON</span> RECORD</div>
@@ -88,6 +109,7 @@
 <footer class="foot">
   <div class="wordmark small"><span>ON</span> RECORD</div>
   <div class="foot-note">Dr. İnanç Sözer · Söylem × Gerçekleşen · Resmî TÜİK/TCMB verisiyle denetlendi</div>
+  <button class="replay-link" id="replayOpen" type="button">↻ Açılışı tekrar oynat</button>
 </footer>
 
 <script src="data.js"></script>

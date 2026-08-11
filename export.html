@@ -25,6 +25,7 @@
   .f-16x9{width:1920px;height:1080px;padding:58px 86px 52px}
   .f-1x1 {width:1080px;height:1080px;padding:66px 74px}
   .f-9x16{width:1080px;height:1920px;padding:112px 78px 200px}
+  .f-og  {width:1200px;height:630px;padding:50px 68px}
 
   .ex-top{display:flex;align-items:center;justify-content:space-between}
   .ex-src{font-family:var(--mono);letter-spacing:.08em;color:var(--confirm);
@@ -117,6 +118,16 @@
   .k-summary .ex-board{width:100%;max-width:1180px}
   .f-16x9.k-summary .ex-head{font-size:72px}
   .f-9x16.k-summary .ex-head,.f-1x1.k-summary .ex-head{font-size:60px}
+  /* Open Graph link-preview card (1200x630) */
+  .f-og.k-summary .ex-head{font-size:54px}
+  .f-og .ex-board{grid-template-columns:repeat(4,1fr);gap:16px}
+  .f-og .ex-tile{padding:20px 16px}
+  .f-og .ex-tile .n{font-size:56px}.f-og .ex-tile .l{font-size:13px}
+  .f-og .ex-eyebrow{font-size:13px}
+  .f-og .ex-subhead{font-size:18px;margin-bottom:30px!important}
+  .f-og .wordmark{font-size:20px}
+  .f-og .ex-src{font-size:12px;padding:6px 12px}
+  .f-og .ex-foot .wordmark{font-size:15px}.f-og .ex-foot .url{font-size:13px}
 
   /* non-chartable "said → happened" panel (rate-level / timing calls) */
   .ex-numbers{display:flex;align-items:center;justify-content:center;width:100%;height:100%;padding:5% 6%;gap:5%}
