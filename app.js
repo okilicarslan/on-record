@@ -4,7 +4,7 @@
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const SERIES_LABEL = { cpi_yoy: "TÜFE (yıllık %)", usdtry: "USD/TRY", policy_rate: "Politika faizi (%)" };
   const SRC = { cpi_yoy: "TÜİK", usdtry: "TCMB", policy_rate: "TCMB" };
-  const VLABEL = { bullseye: "TAM İSABET", strong: "İSABETLİ", near: "KIL PAYI", direction: "YÖN DOĞRU", off: "SAPTI", pending: "BEKLİYOR", na: "KOŞULLU" };
+  const VLABEL = { bullseye: "TAM İSABET", strong: "İSABETLİ", near: "KIL PAYI", direction: "YÖN DOĞRU", off: "SAPMA", pending: "BEKLİYOR", na: "KOŞULLU" };
   const VCOLOR = { bullseye: "#00C08B", strong: "#37d6a6", near: "#F2B441", direction: "#5B9DFF", off: "#FF7A6B", pending: "#7C8CA5", na: "#4a5b78" };
   const MONTHS = ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"];
 
@@ -181,13 +181,20 @@
   }
 
   // ---- populate hero ----
+  // how many calls beat the market: his forecast strictly closer to the realised value than consensus
+  function beatCount() {
+    return D.calls.filter(c => c.consensus != null && c.forecast_num != null && c.realised_num != null &&
+      Math.abs(c.forecast_num - c.realised_num) < Math.abs(c.consensus - c.realised_num)).length;
+  }
+
   function hero() {
-    const call = byId("jan2026-cut100");
+    // flagship = sep2025-cut250: receipt dated 04.09.2025, decision 11.09.2025 — airtight precedence
+    const call = byId("sep2025-cut250");
     const q = document.getElementById("heroQuote");
-    q.innerHTML = `<span style="color:var(--steel)">Piyasa 150 dedi.</span><br><span class="hl">O 100 dedi.</span><br>TCMB 100 indirdi.`;
-    document.getElementById("heroSaid").innerHTML = `<b>23 Ocak 2026</b>, PPK öncesi: “${call.quote}” Faiz tam <b>%37</b>'ye indi — konsensüsün altında, onun dediği gibi.`;
+    q.innerHTML = `<span style="color:var(--steel)">Bazıları 300 dedi.</span><br><span class="hl">O 250 dedi.</span><br>TCMB tam 250 indirdi.`;
+    document.getElementById("heroSaid").innerHTML = `<b>4 Eylül 2025</b>, PPK'dan bir hafta önce: “${call.quote}” Bir hafta sonra faiz tam <b>%40,5</b>'e indi — baz puanına kadar öngördüğü gibi.`;
     const mat = D.calls.filter(c => !["pending", "na"].includes(c.verdict)), dr = mat.filter(c => c.verdict !== "off").length;
-    document.getElementById("heroMeta").innerHTML = `<span><span class="dot">●</span> ${D.meta.bullseyes} tam isabet</span><span>${dr}/${mat.length} yönü doğru</span><span>2020–2026</span><span>TÜİK · TCMB denetimli</span>`;
+    document.getElementById("heroMeta").innerHTML = `<span><span class="dot">●</span> ${D.meta.bullseyes} tam isabet</span><span>${dr}/${mat.length} yönü doğru</span><span>2020–2026</span><span>TÜİK · TCMB verisiyle denetlendi</span>`;
     document.getElementById("heroProv").innerHTML = `<b>Söz:</b> ${call.outlet}, ${call.stated_date} &nbsp;·&nbsp; <b>Gerçekleşen:</b> ${SRC[call.indicator]} — ${SERIES_LABEL[call.indicator]}, ${call.horizon_period}`;
     const c = chart(call, 800, 550);
     document.getElementById("heroChart").appendChild(c.svg);
@@ -200,7 +207,7 @@
     const items = [
       { to: D.meta.bullseyes, tmpl: "{n}", l: "tam isabet", cl: "c" },
       { to: dirRight, tmpl: "{n}/" + matured.length, l: "yönü doğru bildi", cl: "g" },
-      { to: 2, tmpl: "{n}", l: "kez piyasayı yendi", cl: "" },
+      { to: beatCount(), tmpl: "{n}", l: "kez piyasayı yendi", cl: "" },
       { to: matured.length, tmpl: "{n}", l: "denetlenen çağrı", cl: "" },
     ];
     document.getElementById("stats").innerHTML = items.map(it =>
@@ -249,7 +256,7 @@
     t.innerHTML = `<div class="lrow head"><div>TARİH</div><div>GÖSTERGE</div><div>İAS DEMİŞTİ → GERÇEKLEŞEN</div><div>SONUÇ</div></div>`;
     D.calls.slice().sort((a, b) => b.stated_date < a.stated_date ? -1 : 1).forEach(c => {
       const row = document.createElement("div"); row.className = "lrow" + (c.weakest ? " weakest" : "");
-      row.innerHTML = `<div class="date">${c.stated_date}${c.weakest ? '<div class="weak-tag">★ en zayıf</div>' : ""}</div>
+      row.innerHTML = `<div class="date">${c.stated_date}${c.weakest ? '<div class="weak-tag">en zayıf çağrı · yönü yine doğruydu</div>' : ""}</div>
         <div class="ind">${SERIES_LABEL[c.indicator]}</div>
         <div class="fr"><b>${c.forecast_label}</b> → ${c.realised_label}</div>
         <div><span class="chip ${c.verdict}">${VLABEL[c.verdict]}</span></div>`;
@@ -279,7 +286,7 @@
   }
 
   // ---- gift-opening overlay: "Makbuz — Ben Sakladım" ----
-  const DED = "İnanç,\nbunu yıllardır sen söylüyordun. Ben sadece kayda geçirdim.\nPiyasa şaştı, sen şaşmadın.\n— Ömer";
+  const DED = "İnanç,\nBunu yıllardır sen söylüyordun. Ben sadece kayda geçirdim.\nPiyasa şaştı, sen şaşmadın.\n— Ömer";
   function sealSVG(px) {
     return `<svg viewBox="0 0 100 100" width="${px}" height="${px}" aria-hidden="true">
       <circle cx="50" cy="50" r="34" fill="none" stroke="#00C08B" stroke-width="2.4"/>
@@ -336,13 +343,13 @@
         <div class="gg-proof">
           <div class="gg-receipts">${receiptsHTML()}</div>
           <div class="gg-seal">${sealSVG(120)}</div>
-          <div class="gg-caption"><span data-to="${D.meta.bullseyes}">0</span> tam isabet&nbsp;&nbsp;·&nbsp;&nbsp;piyasayı <span data-to="2">0</span> kez geçti&nbsp;&nbsp;·&nbsp;&nbsp;<span data-to="${dirRight}">0</span>/${matured} çağrıda yön doğru</div>
+          <div class="gg-caption"><span data-to="${D.meta.bullseyes}">0</span> tam isabet&nbsp;&nbsp;·&nbsp;&nbsp;piyasayı <span data-to="${beatCount()}">0</span> kez geçti&nbsp;&nbsp;·&nbsp;&nbsp;<span data-to="${dirRight}">0</span>/${matured} çağrıda yön doğru</div>
         </div>
         <div class="gg-ded"></div>
         <div class="gg-title wipe">
           <span class="wordmark"><span>ON</span> RECORD</span>
           <div class="gg-tag">SÖYLEM <span>×</span> GERÇEKLEŞEN</div>
-          <div class="gg-by">Dr. İnanç Sözer · TÜİK · TCMB ile denetlendi</div>
+          <div class="gg-by">Dr. İnanç Sözer · TÜİK · TCMB verisiyle denetlendi</div>
         </div>
       </div>`;
     document.body.appendChild(o);
@@ -372,17 +379,19 @@
     at(6900, () => { q(".gg-seal").classList.add("thunk"); o.classList.add("bloom", "shake"); });
     at(7150, () => o.classList.remove("bloom", "shake"));
     at(8000, () => { q(".gg-reason").classList.add("gone"); q(".gg-forwho").classList.add("gone"); q(".gg-proof").classList.add("gone"); const d = q(".gg-ded"); d.classList.add("show"); typeOn(d, DED, 34); });
-    at(12200, () => { q(".gg-ded").classList.add("gone"); q(".gg-title").classList.add("show"); });
+    at(12200, () => { q(".gg-ded").classList.add("gone"); q(".gg-rule").classList.add("fade"); q(".gg-title").classList.add("show"); });
     at(13600, finish);
 
     function finish() {
       if (done_) return; done_ = true;
       timers.forEach(clearTimeout); clearInterval(tcTimer);
+      document.removeEventListener("keydown", onKey);
       o.classList.add("out"); try { sessionStorage.setItem("onrecord_opened", "1"); } catch (e) {}
       setTimeout(() => { o.remove(); done && done(); }, 600);
     }
+    function onKey(e) { if (e.key === "Escape") finish(); }
     q(".gg-skip").addEventListener("click", finish);
-    document.addEventListener("keydown", e => { if (e.key === "Escape") finish(); }, { once: true });
+    document.addEventListener("keydown", onKey);
   }
   function startHero() { document.body.classList.remove("gate-lock"); if (window.__heroAnimate) window.__heroAnimate(); }
 
@@ -393,8 +402,11 @@
   if (document.getElementById("heroChart")) {
     hero(); stats(); showcase(); ledger(); setupReveals();
     let opened = false; try { opened = sessionStorage.getItem("onrecord_opened"); } catch (e) {}
-    if (reduce || opened) startHero();          // reduced-motion / return visit → straight to hero
-    else runGiftGate(startHero);
+    // gift opening runs only from the private #hediye entry (Ömer's WhatsApp link);
+    // public visits go straight to the credential page — the dedication stays personal
+    const wantGate = location.hash === "#hediye";
+    if (wantGate && !reduce && !opened) runGiftGate(startHero);
+    else startHero();
     const replay = document.getElementById("replayOpen");
     if (replay) replay.addEventListener("click", () => runGiftGate(startHero));
   }

@@ -22,7 +22,6 @@
     "sep2021-cpi20": `Eylül enflasyonu <span class="dim">%20</span> dedi.<br><span class="hl">%19,6 geldi.</span>`,
     "sep2025-cut250": `<span class="dim">250 baz puan</span> iner dedi.<br><span class="hl">Tam 250 indi.</span>`,
     "jan2026-cut100": `Piyasa <span class="dim">150</span> dedi.<br>O <span class="hl">100</span> dedi.<br>TCMB 100 indirdi.`,
-    "timing-11sep": `İlk indirim <span class="dim">11 Eylül'de</span><br>başlar dedi. <span class="hl">Gününe tuttu.</span>`,
     "ye2024-cpi45": `Yıl sonu <span class="dim">%45 üstü</span> dedi.<br><span class="hl">%44,4 geldi.</span>`,
     "ye2025-cpi28": `Dezenflasyon sürer,<br><span class="dim">%28</span> dedi. <span class="hl">Yön doğru.</span>`,
   };
@@ -31,7 +30,7 @@
   const el = (cls, html) => { const d = document.createElement("div"); d.className = cls; if (html != null) d.innerHTML = html; return d; };
 
   const top = el("ex-top");
-  top.innerHTML = wordmark(false) + `<span class="ex-src mono">TÜİK · TCMB İLE DENETLENDİ</span>`;
+  top.innerHTML = wordmark(false) + `<span class="ex-src mono">TÜİK · TCMB VERİSİYLE DENETLENDİ</span>`;
   const foot = el("ex-foot");
   foot.innerHTML = wordmark(true) + `<span class="url">drinancsozer.com</span>`;
 
@@ -45,10 +44,10 @@
     const matured = maturedArr.length, dirRight = maturedArr.filter(c => c.verdict !== "off").length;
     main.innerHTML =
       `<div class="ex-eyebrow">SÖYLEM <span class="x">×</span> GERÇEKLEŞEN</div>` +
-      `<h1 class="ex-head" style="margin:22px 0 20px">Söylediğini <span class="hl">kanıtlıyor.</span></h1>` +
-      `<p class="ex-subhead" style="margin:0 0 40px">Dr. İnanç Sözer'in makro çağrıları, söylendiği tarihte kayda alındı ve resmî TÜİK/TCMB verisiyle tek tek denetlendi.</p>`;
+      `<h1 class="ex-head" style="margin:22px 0 20px">Söyledikleri <span class="hl">kayıtla sabit.</span></h1>` +
+      `<p class="ex-subhead" style="margin:0 0 40px">Dr. İnanç Sözer'in makro çağrıları, söylendiği tarihte kayıt altına alındı ve resmî TÜİK/TCMB verisiyle tek tek denetlendi.</p>`;
     const board = el("ex-board");
-    [[D.meta.bullseyes, "tam isabet", "c"], [dirRight + "/" + matured, "yönü doğru bildi", "g"], ["2", "kez piyasayı yendi", ""], [matured, "denetlenen çağrı", ""]]
+    [[D.meta.bullseyes, "tam isabet", "c"], [dirRight + "/" + matured, "yönü doğru bildi", "g"], [String(D.calls.filter(c => c.consensus != null && c.forecast_num != null && c.realised_num != null && Math.abs(c.forecast_num - c.realised_num) < Math.abs(c.consensus - c.realised_num)).length), "kez piyasayı yendi", ""], [matured, "denetlenen çağrı", ""]]
       .forEach(([n, l, cl]) => board.appendChild(el("ex-tile", `<div class="n ${cl}">${n}</div><div class="l">${l}</div>`)));
     main.appendChild(board);
     window.OR_EXPORT.ready = true;

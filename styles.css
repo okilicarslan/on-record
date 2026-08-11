@@ -144,8 +144,8 @@ em{font-style:normal;color:var(--gold)}
 .lrow .ind{font-size:14px;color:var(--ink)}
 .lrow .fr{font-family:var(--mono);font-size:13px;color:var(--ink-2)}
 .lrow .fr b{color:var(--ink)}
-.lrow.weakest{background:linear-gradient(90deg,rgba(255,122,107,.09),transparent);border-radius:10px}
-.weak-tag{font-family:var(--mono);font-size:10px;color:var(--miss);letter-spacing:.06em}
+.lrow.weakest{background:linear-gradient(90deg,rgba(124,140,165,.08),transparent);border-radius:10px}
+.weak-tag{font-family:var(--mono);font-size:10px;color:var(--steel);letter-spacing:.06em}
 
 /* METHOD */
 .method{position:relative;z-index:2;padding:70px 0}
