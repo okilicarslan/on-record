@@ -21,17 +21,18 @@
   }
 
   // Build an SVG chart element for a call. Returns {svg, animate}
-  function chart(call, W, H) {
+  function chart(call, W, H, opts) {
+    const bcast = !!(opts && opts.broadcast);   // broadcast export = bigger type + consolidated callout
     const ind = call.indicator, pts = windowOf(ind, call.horizon_period, 15);
-    const padL = 44, padT = 34, padR = W * 0.30, padB = 40;
+    const padL = bcast ? 54 : 44, padT = bcast ? 40 : 34, padR = W * 0.30, padB = bcast ? 50 : 40;
     const plotW = W - padL - padR, plotH = H - padT - padB;
     const vals = pts.map(p => p.v).concat([call.forecast_num, call.realised_num, call.forecast_low, call.forecast_high, call.consensus].filter(v => v != null));
-    let lo = Math.min(...vals), hi = Math.max(...vals); const pad = (hi - lo) * 0.28 || 2; lo -= pad; hi += pad;
+    let lo = Math.min(...vals), hi = Math.max(...vals); const pad = (hi - lo) * (bcast ? 0.13 : 0.28) || 2; lo -= pad; hi += pad;
     const n = pts.length;
     const X = i => padL + (n <= 1 ? 0 : i / (n - 1)) * plotW;
     const Y = v => padT + (1 - (v - lo) / (hi - lo)) * plotH;
     const hx = X(n - 1);
-    const svg = el("svg", { class: "or-svg", viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: "xMidYMid meet" });
+    const svg = el("svg", { class: bcast ? "or-svg bcast" : "or-svg", viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: "xMidYMid meet" });
 
     // grid + y labels
     for (let g = 0; g <= 3; g++) { const yv = lo + (hi - lo) * g / 3, y = Y(yv);
@@ -50,35 +51,77 @@
     const path = el("path", { class: "series-line", d: dpath });
     svg.appendChild(path);
 
-    // consensus ghost
-    let consEls = [];
-    if (call.consensus != null) {
-      const cm = el("rect", { class: "cons-mark", x: hx - 5, y: Y(call.consensus) - 5, width: 10, height: 10, transform: `rotate(45 ${hx} ${Y(call.consensus)})`, opacity: .0 });
-      const cl = el("text", { class: "cons-lbl", x: hx - 12, y: Y(call.consensus) + 4, "text-anchor": "end", opacity: 0 }); cl.textContent = call.consensus_label || "Piyasa";
-      svg.appendChild(cm); svg.appendChild(cl); consEls = [cm, cl];
+    // ---- markers + annotations (broadcast callout vs. live inline labels) ----
+    let consEls = [], fc, fcl = null, realEls = [], seal = null;
+    const fY = Y(call.forecast_num != null ? call.forecast_num : (call.realised_num != null ? call.realised_num : lo));
+
+    if (bcast) {
+      // consensus diamond only — its value is folded into the callout below
+      if (call.consensus != null) {
+        const cm = el("rect", { class: "cons-mark", x: hx - 6, y: Y(call.consensus) - 6, width: 12, height: 12, transform: `rotate(45 ${hx} ${Y(call.consensus)})`, opacity: 0 });
+        svg.appendChild(cm); consEls = [cm];
+      }
+      // his frozen call marker (star, on the line)
+      fc = el("path", { class: "fc-star", d: starPath(hx, fY, 12), opacity: 0 });
+      svg.appendChild(fc);
+      // one consolidated callout in the right margin (no overlapping micro-labels)
+      const rows = [{ k: "İ.S. DEDİ", v: call.forecast_num != null ? fmt(ind, call.forecast_num) : (call.forecast_label || ""), c: "#5B9DFF" }];
+      if (call.realised_num != null) rows.push({ k: "GERÇEKLEŞEN", v: fmt(ind, call.realised_num), c: VCOLOR[call.verdict] });
+      if (call.consensus != null) rows.push({ k: "PİYASA", v: fmt(ind, call.consensus), c: "#7C8CA5" });
+      const cx0 = hx + 30, cw = Math.max(214, W - 14 - cx0), rowH = 52, coPad = 18, ch = rows.length * rowH + coPad;
+      const convY = call.realised_num != null ? (fY + Y(call.realised_num)) / 2 : fY;
+      const cyTop = Math.min(Math.max(convY - ch / 2, padT + 68), H - padB - ch - 6);
+      const g = el("g", { opacity: 0 });
+      g.appendChild(el("rect", { x: cx0, y: cyTop, width: cw, height: ch, rx: 12, fill: "rgba(10,23,48,.92)", stroke: "#26406e" }));
+      rows.forEach((r, i) => {
+        const ry = cyTop + coPad / 2 + i * rowH;
+        const kt = el("text", { x: cx0 + 18, y: ry + 19, style: "font-family:var(--mono);font-size:14px;letter-spacing:.08em;fill:#8ea0bd" }); kt.textContent = r.k;
+        const vt = el("text", { x: cx0 + 18, y: ry + 46, style: "font-family:var(--display);font-weight:900;font-size:28px;fill:" + r.c }); vt.textContent = r.v;
+        g.appendChild(kt); g.appendChild(vt);
+      });
+      svg.appendChild(g);
+      // realised dot + leader line to the callout + gap
+      let rc = null, gap = null, leader = null;
+      if (call.realised_num != null) {
+        leader = el("line", { x1: hx + 9, y1: Y(call.realised_num), x2: cx0, y2: cyTop + ch / 2, stroke: "#26406e", "stroke-width": 1.5, opacity: 0 });
+        if (call.forecast_num != null && Math.abs(call.realised_num - call.forecast_num) > 0.2)
+          gap = el("line", { class: "gap-line", x1: hx, x2: hx, y1: fY, y2: Y(call.realised_num), stroke: VCOLOR[call.verdict], opacity: 0 });
+        rc = el("circle", { cx: hx, cy: Y(call.realised_num), r: 8, fill: VCOLOR[call.verdict], stroke: "#0A1730", "stroke-width": 2.5, opacity: 0 });
+        if (gap) svg.appendChild(gap);
+        svg.appendChild(leader); svg.appendChild(rc);
+      }
+      realEls = [leader, gap, rc, g].filter(Boolean);
+      // notary seal — DOĞRULANDI only on true bullseyes, with its own clear space above the callout
+      if (call.verdict === "bullseye" && call.realised_num != null) {
+        const sx = cx0 + cw * 0.5, sy = Math.max(padT + 46, cyTop - 54);
+        seal = makeSeal(sx + 48, sy + 54); svg.appendChild(seal);
+      }
+    } else {
+      // consensus ghost
+      if (call.consensus != null) {
+        const cm = el("rect", { class: "cons-mark", x: hx - 5, y: Y(call.consensus) - 5, width: 10, height: 10, transform: `rotate(45 ${hx} ${Y(call.consensus)})`, opacity: .0 });
+        const cl = el("text", { class: "cons-lbl", x: hx - 12, y: Y(call.consensus) + 4, "text-anchor": "end", opacity: 0 }); cl.textContent = call.consensus_label || "Piyasa";
+        svg.appendChild(cm); svg.appendChild(cl); consEls = [cm, cl];
+      }
+      // forecast star (his frozen call) + label (left)
+      fc = el("path", { class: "fc-star", d: starPath(hx, fY, 9), opacity: 0 });
+      fcl = el("text", { class: "fc-lbl", x: hx - 14, y: fY - 12, "text-anchor": "end", opacity: 0 });
+      fcl.textContent = "İ.S. dedi: " + (call.forecast_num != null ? fmt(ind, call.forecast_num) : (call.forecast_label || ""));
+      svg.appendChild(fc); svg.appendChild(fcl);
+      // realised dot + label (right)
+      if (call.realised_num != null) {
+        const rc = el("circle", { cx: hx, cy: Y(call.realised_num), r: 6.5, fill: VCOLOR[call.verdict], stroke: "#0A1730", "stroke-width": 2, opacity: 0 });
+        const rl = el("text", { class: "real-lbl", x: hx + 14, y: Y(call.realised_num) + 4, fill: VCOLOR[call.verdict], opacity: 0 }); rl.textContent = "Gerçekleşen: " + fmt(ind, call.realised_num);
+        let gap = null;
+        if (call.forecast_num != null && Math.abs(call.realised_num - call.forecast_num) > 0.2)
+          gap = el("line", { class: "gap-line", x1: hx, x2: hx, y1: Y(call.forecast_num), y2: Y(call.realised_num), stroke: VCOLOR[call.verdict], opacity: 0 });
+        if (gap) svg.appendChild(gap);
+        svg.appendChild(rc); svg.appendChild(rl); realEls = [rc, rl, gap].filter(Boolean);
+      }
+      // seal — bullseye only (honest: DOĞRULANDI only where he nailed it exactly)
+      if (call.verdict === "bullseye" && call.realised_num != null)
+        { seal = makeSeal(hx, Y(call.realised_num)); svg.appendChild(seal); }
     }
-    // forecast star (his frozen call) + label (left)
-    const star = starPath(hx, Y(call.forecast_num != null ? call.forecast_num : call.realised_num), 9);
-    const fc = el("path", { class: "fc-star", d: star, opacity: 0 });
-    const fcl = el("text", { class: "fc-lbl", x: hx - 14, y: Y(call.forecast_num != null ? call.forecast_num : (call.realised_num || lo)) - 12, "text-anchor": "end", opacity: 0 });
-    fcl.textContent = "İ.S. dedi: " + (call.forecast_num != null ? fmt(ind, call.forecast_num) : (call.forecast_label || ""));
-    svg.appendChild(fc); svg.appendChild(fcl);
-    // realised dot + label (right)
-    let realEls = [];
-    if (call.realised_num != null) {
-      const rc = el("circle", { cx: hx, cy: Y(call.realised_num), r: 6.5, fill: VCOLOR[call.verdict], stroke: "#0A1730", "stroke-width": 2, opacity: 0 });
-      const rl = el("text", { class: "real-lbl", x: hx + 14, y: Y(call.realised_num) + 4, fill: VCOLOR[call.verdict], opacity: 0 }); rl.textContent = "Gerçekleşen: " + fmt(ind, call.realised_num);
-      // gap
-      let gap = null;
-      if (call.forecast_num != null && Math.abs(call.realised_num - call.forecast_num) > 0.2)
-        gap = el("line", { class: "gap-line", x1: hx, x2: hx, y1: Y(call.forecast_num), y2: Y(call.realised_num), stroke: VCOLOR[call.verdict], opacity: 0 });
-      if (gap) svg.appendChild(gap);
-      svg.appendChild(rc); svg.appendChild(rl); realEls = [rc, rl, gap].filter(Boolean);
-    }
-    // seal (only for confirmed-ish)
-    let seal = null;
-    if (["bullseye", "strong", "near"].includes(call.verdict) && call.realised_num != null)
-      { seal = makeSeal(hx, Y(call.realised_num)); svg.appendChild(seal); }
 
     function animate() {
       if (reduce) { fc.style.opacity = fcl.style.opacity = 1; realEls.forEach(e => e.style.opacity = 1); consEls.forEach(e => e.style.opacity = .85); if (seal) seal._inner.style.opacity = 1; return; }
@@ -94,7 +137,31 @@
       if (seal) seal._inner.animate([{ opacity: 0, transform: "scale(1.7) rotate(-14deg)" }, { opacity: 1, transform: "scale(.95) rotate(3deg)" }, { opacity: 1, transform: "scale(1) rotate(0)" }],
         { duration: 620, delay: 2080, fill: "forwards", easing: "cubic-bezier(.3,1.5,.4,1)" });
     }
-    return { svg, animate };
+    const parts = { fc, fcl, consEls, path, realEls, seal, L: 0 };
+    return { svg, animate, parts };
+  }
+
+  // Deterministic replay of the reveal as a pure function of normalized time t∈[0,1].
+  // Used by the export studio so each captured frame is frame-perfect regardless of
+  // screenshot latency (a still is simply seek(parts, 1)).
+  const easeOutBack = x => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
+  const easeInOutCubic = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+  function seek(parts, t) {
+    const { fc, fcl, consEls, path, realEls, seal } = parts;
+    const cl = x => Math.max(0, Math.min(1, x)), seg = (a, b) => cl((t - a) / (b - a));
+    const p1 = seg(0, 0.14);
+    fc.style.transformBox = "fill-box"; fc.style.transformOrigin = "center";
+    fc.style.opacity = cl(p1 * 1.4); fc.style.transform = "scale(" + easeOutBack(p1).toFixed(3) + ")";
+    if (fcl) fcl.style.opacity = seg(0.05, 0.20);
+    consEls.forEach(e => e.style.opacity = (0.85 * seg(0.08, 0.22)).toFixed(3));
+    const L = parts.L || (parts.L = path.getTotalLength());
+    path.style.strokeDasharray = L; path.style.strokeDashoffset = (L * (1 - easeInOutCubic(seg(0.18, 0.66)))).toFixed(2);
+    realEls.forEach(e => e.style.opacity = seg(0.66, 0.82));
+    if (seal) {
+      const ps = seg(0.72, 1.0), eb = easeOutBack(ps);
+      seal._inner.style.opacity = cl(ps * 2);
+      seal._inner.style.transform = "scale(" + (1.7 - 0.7 * eb).toFixed(3) + ") rotate(" + (-14 + 14 * eb).toFixed(2) + "deg)";
+    }
   }
 
   function starPath(cx, cy, r) {
@@ -119,7 +186,8 @@
     const q = document.getElementById("heroQuote");
     q.innerHTML = `<span style="color:var(--steel)">Piyasa 150 dedi.</span><br><span class="hl">O 100 dedi.</span><br>TCMB 100 indirdi.`;
     document.getElementById("heroSaid").innerHTML = `<b>23 Ocak 2026</b>, PPK öncesi: “${call.quote}” Faiz tam <b>%37</b>'ye indi — konsensüsün altında, onun dediği gibi.`;
-    document.getElementById("heroMeta").innerHTML = `<span><span class="dot">●</span> ${D.meta.bullseyes} tam isabet</span><span>%85 yön isabeti</span><span>2020–2026</span><span>TÜİK · TCMB denetimli</span>`;
+    const mat = D.calls.filter(c => !["pending", "na"].includes(c.verdict)), dr = mat.filter(c => c.verdict !== "off").length;
+    document.getElementById("heroMeta").innerHTML = `<span><span class="dot">●</span> ${D.meta.bullseyes} tam isabet</span><span>${dr}/${mat.length} yönü doğru</span><span>2020–2026</span><span>TÜİK · TCMB denetimli</span>`;
     document.getElementById("heroProv").innerHTML = `<b>Söz:</b> ${call.outlet}, ${call.stated_date} &nbsp;·&nbsp; <b>Gerçekleşen:</b> ${SRC[call.indicator]} — ${SERIES_LABEL[call.indicator]}, ${call.horizon_period}`;
     const c = chart(call, 800, 550);
     document.getElementById("heroChart").appendChild(c.svg);
@@ -128,7 +196,8 @@
 
   function stats() {
     const matured = D.calls.filter(c => !["pending", "na"].includes(c.verdict));
-    const items = [[D.meta.bullseyes, "tam isabet", "c"], ["%85", "yön isabeti", "g"], ["2", "kez piyasayı yendi", ""], [matured.length, "denetlenen çağrı", ""]];
+    const dirRight = matured.filter(c => c.verdict !== "off").length;
+    const items = [[D.meta.bullseyes, "tam isabet", "c"], [dirRight + "/" + matured.length, "yönü doğru bildi", "g"], ["2", "kez piyasayı yendi", ""], [matured.length, "denetlenen çağrı", ""]];
     document.getElementById("stats").innerHTML = items.map(([n, l, cl]) => `<div class="stat"><div class="n ${cl}">${n}</div><div class="l">${l}</div></div>`).join("");
   }
 
@@ -182,5 +251,9 @@
     });
   }
 
-  hero(); stats(); showcase(); ledger();
+  // Expose the engine so the export studio reuses the exact same chart/seal code (no drift).
+  window.OR_ENGINE = { chart, seek, makeSeal, bigNumbers, byId, fmt, prd, windowOf, VLABEL, VCOLOR, SERIES_LABEL, SRC, D };
+
+  // Only auto-populate when we're on the main page (export.html has no #heroChart).
+  if (document.getElementById("heroChart")) { hero(); stats(); showcase(); ledger(); }
 })();
