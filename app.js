@@ -330,8 +330,8 @@
         <div class="gg-rule"></div>
         <div class="gg-reason">
           <span class="l wipe">Yıllardır söylüyordun.</span>
-          <span class="l wipe">Kimse fişini saklamadı.</span>
-          <span class="l wipe hot"><b>Ben sakladım.</b></span>
+          <span class="l wipe">Her sözün kayda geçti.</span>
+          <span class="l wipe hot">Resmî veri <b>seni doğruladı.</b></span>
         </div>
         <div class="gg-proof">
           <div class="gg-receipts">${receiptsHTML()}</div>
@@ -359,20 +359,21 @@
     const timers = []; let done_ = false;
     const at = (ms, fn) => timers.push(setTimeout(fn, ms));
 
+    // pacing: each line gets real reading time (~1.2s); the dedication is the longest hold
     at(40, () => o.classList.add("in"));
     at(120, () => q(".gg-live").classList.add("show"));
     at(220, () => q(".gg-rule").classList.add("draw"));
-    at(680, () => q(".gg-forwho").classList.add("show"));
-    at(1120, () => o.querySelectorAll(".gg-reason .l")[0].classList.add("show"));
-    at(1470, () => o.querySelectorAll(".gg-reason .l")[1].classList.add("show"));
-    at(1820, () => o.querySelectorAll(".gg-reason .l")[2].classList.add("show"));
-    at(2600, () => { q(".gg-reason").classList.add("mini"); q(".gg-forwho").classList.add("mini"); q(".gg-proof").classList.add("show"); o.querySelectorAll(".rc").forEach(c => c.classList.add("in")); });
-    at(3150, () => { q(".gg-caption").classList.add("show"); gateCountUp(o); });
-    at(3520, () => { q(".gg-seal").classList.add("thunk"); o.classList.add("bloom", "shake"); });
-    at(3720, () => o.classList.remove("bloom", "shake"));
-    at(4200, () => { q(".gg-reason").classList.add("gone"); q(".gg-forwho").classList.add("gone"); q(".gg-proof").classList.add("gone"); const d = q(".gg-ded"); d.classList.add("show"); typeOn(d, DED, 32); });
-    at(6250, () => { q(".gg-ded").classList.add("gone"); q(".gg-title").classList.add("show"); });
-    at(7500, finish);
+    at(700, () => q(".gg-forwho").classList.add("show"));
+    at(1400, () => o.querySelectorAll(".gg-reason .l")[0].classList.add("show"));
+    at(2600, () => o.querySelectorAll(".gg-reason .l")[1].classList.add("show"));
+    at(3800, () => o.querySelectorAll(".gg-reason .l")[2].classList.add("show"));
+    at(5400, () => { q(".gg-reason").classList.add("mini"); q(".gg-forwho").classList.add("mini"); q(".gg-proof").classList.add("show"); o.querySelectorAll(".rc").forEach(c => c.classList.add("in")); });
+    at(6100, () => { q(".gg-caption").classList.add("show"); gateCountUp(o); });
+    at(6900, () => { q(".gg-seal").classList.add("thunk"); o.classList.add("bloom", "shake"); });
+    at(7150, () => o.classList.remove("bloom", "shake"));
+    at(8000, () => { q(".gg-reason").classList.add("gone"); q(".gg-forwho").classList.add("gone"); q(".gg-proof").classList.add("gone"); const d = q(".gg-ded"); d.classList.add("show"); typeOn(d, DED, 34); });
+    at(12200, () => { q(".gg-ded").classList.add("gone"); q(".gg-title").classList.add("show"); });
+    at(13600, finish);
 
     function finish() {
       if (done_) return; done_ = true;
