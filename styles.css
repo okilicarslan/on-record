@@ -40,8 +40,17 @@ em{font-style:normal;color:var(--gold)}
   border:1px solid var(--confirm-dim);border-radius:999px;padding:5px 11px;background:rgba(0,192,139,.06)}
 
 /* HERO */
-.hero{position:relative;z-index:2;min-height:100vh;display:flex;align-items:center;
-  padding:120px clamp(18px,4vw,44px) 60px;max-width:var(--maxw);margin:0 auto}
+.hero{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  gap:clamp(22px,3.4vw,40px);padding:118px clamp(18px,4vw,44px) 56px;max-width:var(--maxw);margin:0 auto}
+
+/* prestige masthead — leads with HIM (Dr. title + credentials front and center) */
+.hero-authority{width:100%;border-left:2px solid var(--gold);padding-left:clamp(16px,2vw,22px)}
+.ha-name{font-family:var(--display);font-weight:900;letter-spacing:-.02em;line-height:1;margin:0 0 12px;
+  font-size:clamp(30px,5.2vw,54px)}
+.ha-name .dr{color:var(--gold)}
+.ha-titles{display:flex;flex-direction:column;gap:5px}
+.ha-primary{font-family:var(--mono);font-weight:600;font-size:clamp(13px,1.5vw,15.5px);letter-spacing:.03em;color:var(--confirm)}
+.ha-media{font-family:var(--mono);font-size:clamp(12px,1.3vw,13.5px);letter-spacing:.03em;color:var(--muted)}
 .hero-grid{display:grid;grid-template-columns:0.92fr 1.08fr;gap:clamp(24px,4vw,60px);align-items:center;width:100%}
 .eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:.34em;color:var(--gold);margin-bottom:26px}
 .eyebrow .x{color:var(--steel);margin:0 .2em}
