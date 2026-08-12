@@ -378,9 +378,11 @@
     at(6100, () => { q(".gg-caption").classList.add("show"); gateCountUp(o); });
     at(6900, () => { q(".gg-seal").classList.add("thunk"); o.classList.add("bloom", "shake"); });
     at(7150, () => o.classList.remove("bloom", "shake"));
-    at(8000, () => { q(".gg-reason").classList.add("gone"); q(".gg-forwho").classList.add("gone"); q(".gg-proof").classList.add("gone"); const d = q(".gg-ded"); d.classList.add("show"); typeOn(d, DED, 34); });
-    at(12200, () => { q(".gg-ded").classList.add("gone"); q(".gg-rule").classList.add("fade"); q(".gg-title").classList.add("show"); });
-    at(13600, finish);
+    at(8000, () => { q(".gg-reason").classList.add("gone"); q(".gg-forwho").classList.add("gone"); q(".gg-proof").classList.add("gone"); q(".gg-rule").classList.add("fade"); });
+    at(8600, () => { const d = q(".gg-ded"); d.classList.add("show"); typeOn(d, DED, 34); });
+    at(13000, () => q(".gg-ded").classList.add("gone"));
+    at(13700, () => q(".gg-title").classList.add("show"));
+    at(15100, finish);
 
     function finish() {
       if (done_) return; done_ = true;

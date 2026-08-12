@@ -119,7 +119,8 @@ body.gate-lock { overflow: hidden; }
 .gg-caption b, .gg-caption span { color: #00C08B; font-weight: 600; text-shadow: 0 0 14px rgba(231,180,76,.45); }
 
 /* dedication — glass slab, types on */
-.gg-ded { position: absolute; max-width: 60ch; white-space: pre-wrap;
+.gg-ded { position: absolute; inset: 0; margin: auto; width: fit-content; height: fit-content;
+  max-width: min(60ch, 86vw); white-space: pre-wrap;
   font-family: var(--display); font-weight: 600; font-size: clamp(17px,2.3vw,20px); line-height: 1.7;
   color: #eafaff; opacity: 0; transform: translateZ(-360px); text-shadow: 0 0 20px rgba(120,180,255,.16); }
 .gg-ded.show { opacity: 1; transform: none; transition: opacity .5s ease, transform .7s cubic-bezier(.16,1,.3,1); }
@@ -129,7 +130,8 @@ body.gate-lock { overflow: hidden; }
 @keyframes gg-caret { 50% { opacity: 0 } }
 
 /* handoff title card */
-.gg-title { position: absolute; opacity: 0; transform: translateZ(-420px) translateY(8px);
+.gg-title { position: absolute; inset: 0; margin: auto; width: fit-content; height: fit-content;
+  opacity: 0; transform: translateZ(-420px) translateY(8px);
   display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .gg-title.show { opacity: 1; transform: none; transition: opacity .6s ease, transform .8s cubic-bezier(.16,1,.3,1); }
 .gg-title .wordmark { font-size: clamp(30px,6vw,54px); letter-spacing: .16em; text-shadow: 0 0 30px rgba(0,192,139,.35); }
