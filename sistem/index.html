@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sistem — Nasıl Çalışır? · On Record</title>
+<meta name="description" content="Ekranda söylenen bir cümle nasıl doğrulanmış kayda dönüşür? Yapay zekâ jürisi, resmî TÜİK/TCMB verisi ve dört kurallı makine denetimi — istasyon istasyon." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://drinancsozer.com/sistem/" />
+<meta property="og:title" content="Sistem — Nasıl Çalışır? · On Record" />
+<meta property="og:description" content="Söz uçar. Burada kayda girer. Mühürlenmeden çıkamaz. Bir cümlenin beş istasyonluk doğrulanma yolculuğu." />
+<meta property="og:image" content="https://drinancsozer.com/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="manifest" href="../manifest.webmanifest" />
+<meta name="theme-color" content="#0A1730" />
+<link rel="icon" href="../icons/icon-192.png" />
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css" />
+<link rel="stylesheet" href="sistem.css" />
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="mob-progress" aria-hidden="true"></div>
+
+<header class="topbar">
+  <a class="wordmark" href="../"><span>ON</span> RECORD</a>
+  <nav class="topnav">
+    <a href="../#vitrin">Vitrin</a>
+    <a href="../#defter">Sicil</a>
+    <a href="./" class="active">Sistem</a>
+    <a href="../media/">Yayın Paketi</a>
+    <span class="src-pill">TÜİK · TCMB verisiyle denetlendi</span>
+  </nav>
+</header>
+
+<!-- Mühür Rayı — desktop scroll-spy -->
+<aside class="ray" aria-hidden="true">
+  <a href="#ist1" data-ray="ist1"><i></i><span>01 SÖZ</span></a>
+  <a href="#ist2" data-ray="ist2"><i></i><span>02 JÜRİ</span></a>
+  <a href="#ist3" data-ray="ist3"><i></i><span>03 VERİ</span></a>
+  <a href="#ist4" data-ray="ist4"><i></i><span>04 DENETİM</span></a>
+  <a href="#ist5" data-ray="ist5"><i></i><span>05 MÜHÜR</span></a>
+</aside>
+
+<!-- S0 · HERO — KONTROL ODASI -->
+<section class="s-hero">
+  <div class="s-wrap">
+    <div class="eyebrow">SİSTEM <span class="x">×</span> KONTROL ODASI</div>
+    <h1 class="s-title">
+      <span>Söz uçar.</span>
+      <span>Burada <b class="c">kayda girer.</b></span>
+      <span><b class="g">Mühürlenmeden</b> çıkamaz.</span>
+    </h1>
+    <p class="s-lead">On Record, ekranda söylenen tarihli bir cümleyi alır; birbirinden bağımsız yapay zekâ
+      jürisinden, TÜİK ve TCMB'nin resmî serilerinden ve dört kurallı makine denetiminden geçirir.
+      Kurallardan biri bile tutmazsa yayın kendiliğinden durur. Gerçekleşen rakamı hiç kimse elle yazmaz.</p>
+
+    <figure class="dossier">
+      <blockquote>&ldquo;TCMB'nin 11 Eylül'de 250 baz puanlık bir indirim yapacağını öngörüyorum.&rdquo;</blockquote>
+      <figcaption>
+        <span class="d-pill">4 EYLÜL 2025 · TV YAYINI · BİREBİR ALINTI</span>
+        <span class="d-no">DOSYA NO: OR-2025-0904</span>
+      </figcaption>
+    </figure>
+    <p class="s-note">Bu gerçek bir kayıt — örnek olsun diye yazılmadı, ekranda söylendi.
+      Aşağıda bu cümlenin mühürlenme yolculuğunu izleyeceksiniz. Sicildeki her satır aynı beş istasyondan geçer.</p>
+
+    <div class="statusline" role="status">
+      <span class="st"><i class="dot"></i>HAT AKTİF</span>
+      <span class="st">VERİ: TÜİK · TCMB</span>
+      <span class="st">DENETİM: OTOMATİK</span>
+      <span class="st">ELLE GİRİŞ: KAPALI</span>
+    </div>
+    <div class="scrollcue" aria-hidden="true"><span></span>KAYDIRIN — SÖZÜN YOLCULUĞU İSTASYON İSTASYON</div>
+  </div>
+</section>
+
+<!-- S1 · TEK BAKIŞTA HAT -->
+<section class="s-pano station" id="pano">
+  <div class="s-wrap">
+    <div class="kicker">TEK BAKIŞTA</div>
+    <h2>Beş istasyon, tek kural: geçemeyen yayımlanmaz.</h2>
+    <figure class="fig">
+      <svg class="d1 d1-desk" viewBox="0 0 960 230" role="img" aria-label="Beş istasyonlu doğrulama hattı">
+        <line class="d1-rail" x1="20" y1="105" x2="940" y2="105"/>
+        <g class="d1-st" style="--i:0"><rect x="20"  y="60" width="160" height="90" rx="14"/><text class="d1-num" x="100" y="98">01</text><text class="d1-name" x="100" y="126">SÖZ</text></g>
+        <g class="d1-st" style="--i:1"><rect x="210" y="60" width="160" height="90" rx="14"/><text class="d1-num" x="290" y="98">02</text><text class="d1-name" x="290" y="126">JÜRİ</text></g>
+        <g class="d1-st" style="--i:2"><rect x="400" y="60" width="160" height="90" rx="14"/><text class="d1-num" x="480" y="98">03</text><text class="d1-name" x="480" y="126">RESMÎ VERİ</text></g>
+        <g class="d1-st" style="--i:3"><rect x="590" y="60" width="160" height="90" rx="14"/><text class="d1-num" x="670" y="98">04</text><text class="d1-name" x="670" y="126">DENETİM</text></g>
+        <g class="d1-st" style="--i:4"><rect x="780" y="60" width="160" height="90" rx="14"/><text class="d1-num" x="860" y="98">05</text><text class="d1-name" x="860" y="126">MÜHÜR</text></g>
+        <circle class="d1-pulse" cx="20" cy="105" r="4"/>
+      </svg>
+      <svg class="d1 d1-mob" viewBox="0 0 260 960" role="img" aria-label="Beş istasyonlu doğrulama hattı">
+        <line class="d1-rail" x1="130" y1="20" x2="130" y2="940"/>
+        <g class="d1-st" style="--i:0"><rect x="50" y="20"  width="160" height="120" rx="14"/><text class="d1-num" x="130" y="72">01</text><text class="d1-name" x="130" y="106">SÖZ</text></g>
+        <g class="d1-st" style="--i:1"><rect x="50" y="210" width="160" height="120" rx="14"/><text class="d1-num" x="130" y="262">02</text><text class="d1-name" x="130" y="296">JÜRİ</text></g>
+        <g class="d1-st" style="--i:2"><rect x="50" y="400" width="160" height="120" rx="14"/><text class="d1-num" x="130" y="452">03</text><text class="d1-name" x="130" y="486">RESMÎ VERİ</text></g>
+        <g class="d1-st" style="--i:3"><rect x="50" y="590" width="160" height="120" rx="14"/><text class="d1-num" x="130" y="642">04</text><text class="d1-name" x="130" y="676">DENETİM</text></g>
+        <g class="d1-st" style="--i:4"><rect x="50" y="780" width="160" height="120" rx="14"/><text class="d1-num" x="130" y="832">05</text><text class="d1-name" x="130" y="866">MÜHÜR</text></g>
+        <circle class="d1-pulse-v" cx="130" cy="20" r="4"/>
+      </svg>
+    </figure>
+    <div class="pano-cap">
+      <div><b>SÖZ</b>Tarihli cümle, birebir alıntısıyla kayda girer.</div>
+      <div><b>JÜRİ</b>Bağımsız yapay zekâ modelleri ayrı ayrı okur; yalnız hemfikir olunan geçer.</div>
+      <div><b>RESMÎ VERİ</b>Gerçekleşen rakam TÜİK/TCMB serisinden okunur — elle yazılmaz.</div>
+      <div><b>DENETİM</b>Dört kural; biri bile tutmazsa yayın kendiliğinden durur.</div>
+      <div><b>MÜHÜR</b>Sabit cetvelle puanlanır ve arşive mühürlenir — sapmalar dahil.</div>
+    </div>
+  </div>
+</section>
+
+<!-- S2 · İSTASYON 01 · SÖZ -->
+<section class="s-ist station" id="ist1">
+  <div class="s-wrap">
+    <div class="kicker">İSTASYON 01 — SÖZ · KAYIT MASASI</div>
+    <h2>Her şey tarihli bir cümleyle başlar.</h2>
+    <p>TV'de söylenen söz; kaynağı, tarihi ve birebir alıntısıyla kayda girer.
+      Bu sistem hafızaya değil, kayda güvenir.</p>
+    <figure class="fig">
+      <svg class="d2" viewBox="0 0 680 440" role="img" aria-label="TV yayınından zabıt kartına kayıt">
+        <rect class="frame" x="20" y="90" width="250" height="170" rx="12"/>
+        <g class="d2-wave">
+          <rect x="44"  y="160" width="6" height="30"/><rect x="54" y="150" width="6" height="50"/>
+          <rect x="64"  y="168" width="6" height="14"/><rect x="74" y="144" width="6" height="62"/>
+          <rect x="84"  y="158" width="6" height="34"/><rect x="94" y="151" width="6" height="48"/>
+          <rect x="104" y="165" width="6" height="20"/><rect x="114" y="140" width="6" height="70"/>
+          <rect x="124" y="156" width="6" height="38"/><rect x="134" y="148" width="6" height="54"/>
+          <rect x="144" y="162" width="6" height="26"/><rect x="154" y="143" width="6" height="64"/>
+          <rect x="164" y="157" width="6" height="36"/><rect x="174" y="152" width="6" height="46"/>
+          <rect x="184" y="166" width="6" height="18"/><rect x="194" y="146" width="6" height="58"/>
+          <rect x="204" y="159" width="6" height="32"/><rect x="214" y="150" width="6" height="50"/>
+          <rect x="224" y="164" width="6" height="22"/><rect x="234" y="154" width="6" height="42"/>
+        </g>
+        <text class="lbl" x="145" y="292" text-anchor="middle">TV YAYINI · CANLI</text>
+        <path class="d2-sine drawn" pathLength="1" d="M270 175 C 310 145, 350 205, 388 175" fill="none"/>
+        <g class="d2-card">
+          <g transform="rotate(-1.2 515 210)">
+            <rect x="390" y="110" width="250" height="200" rx="8" fill="#F0E7D4"/>
+            <rect x="390" y="110" width="250" height="4" fill="#C79A3A"/>
+            <text class="d2-q" x="410" y="152">&ldquo;TCMB'nin 11 Eylül'de</text>
+            <text class="d2-q" x="410" y="176">250 baz puanlık bir indirim</text>
+            <text class="d2-q" x="410" y="200">yapacağını öngörüyorum.&rdquo;</text>
+            <text class="d2-src" x="410" y="248">4 EYLÜL 2025 · TV YAYINI</text>
+            <text class="d2-src" x="410" y="268">DOSYA NO: OR-2025-0904</text>
+          </g>
+          <g class="d2-stamp seal">
+            <circle cx="588" cy="152" r="26" fill="none" stroke="#00A277" stroke-width="2"/>
+            <circle cx="588" cy="152" r="20" fill="none" stroke="#00A277" stroke-width="1" stroke-dasharray="2 4"/>
+            <text class="d2-date" x="588" y="149">KAYIT</text>
+            <text class="d2-date" x="588" y="162">04.09.25</text>
+          </g>
+        </g>
+        <path class="gap-line d2-out drawn" pathLength="1" d="M640 210 L 672 210" stroke="#E7B44C" fill="none"/>
+      </svg>
+      <figcaption class="figcap">İstasyon çıkışı: tarihli, kaynaklı, birebir alıntılı zabıt.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- S3 · İSTASYON 02 · JÜRİ -->
+<section class="s-ist station" id="ist2">
+  <div class="s-wrap">
+    <div class="kicker">İSTASYON 02 — YAPAY ZEKÂ JÜRİSİ · AYRI ODALAR</div>
+    <h2>Tek model asla tek başına karar veremez.</h2>
+    <p>Birden çok bağımsız yapay zekâ modeli aynı konuşmayı birbirini görmeden, ayrı odalarda okur.
+      Yalnızca hemfikir oldukları sayısal tahmin hatta devam eder; bölünürlerse dosya insan incelemesine düşer.</p>
+    <figure class="fig">
+      <svg class="d3" viewBox="0 0 720 500" role="img" aria-label="Üç bağımsız yapay zekâ odası ve mutabakat kapısı">
+        <g class="d3-doc"><rect x="310" y="16" width="100" height="44" rx="6" fill="#F0E7D4"/><text class="d3-doctxt" x="360" y="43">SÖZ</text></g>
+        <path class="drawn d3-in" pathLength="1" d="M340 60 C 300 90, 180 90, 130 118" fill="none"/>
+        <path class="drawn d3-in" pathLength="1" d="M360 60 L 360 118" fill="none"/>
+        <path class="drawn d3-in" pathLength="1" d="M380 60 C 420 90, 540 90, 590 118" fill="none"/>
+        <line class="d3-wall" x1="255" y1="106" x2="255" y2="360"/>
+        <line class="d3-wall" x1="465" y1="106" x2="465" y2="360"/>
+        <g class="d3-room" style="--i:0">
+          <rect class="room" x="40" y="128" width="180" height="170" rx="10"/>
+          <path class="d3-lock" d="M124 114 v-6 a6 6 0 0 1 12 0 v6 m-16 0 h20 v12 h-20 z" fill="none"/>
+          <g class="d3-neur"><circle cx="90" cy="170" r="5"/><circle cx="130" cy="158" r="4"/><circle cx="168" cy="176" r="6"/><line x1="95" y1="169" x2="126" y2="159"/><line x1="134" y1="160" x2="163" y2="174"/></g>
+          <rect class="d3-bar" x="64" y="248" height="8" rx="4"/>
+          <text class="lbl sm" x="130" y="284" text-anchor="middle">BAĞIMSIZ OKUMA</text>
+        </g>
+        <g class="d3-room" style="--i:1">
+          <rect class="room" x="270" y="128" width="180" height="170" rx="10"/>
+          <path class="d3-lock" d="M354 114 v-6 a6 6 0 0 1 12 0 v6 m-16 0 h20 v12 h-20 z" fill="none"/>
+          <g class="d3-neur"><circle cx="318" cy="176" r="6"/><circle cx="360" cy="160" r="4"/><circle cx="400" cy="170" r="5"/><line x1="324" y1="174" x2="356" y2="161"/><line x1="364" y1="161" x2="395" y2="169"/></g>
+          <rect class="d3-bar" x="294" y="248" height="8" rx="4"/>
+          <text class="lbl sm" x="360" y="284" text-anchor="middle">BAĞIMSIZ OKUMA</text>
+        </g>
+        <g class="d3-room" style="--i:2">
+          <rect class="room" x="500" y="128" width="180" height="170" rx="10"/>
+          <path class="d3-lock" d="M584 114 v-6 a6 6 0 0 1 12 0 v6 m-16 0 h20 v12 h-20 z" fill="none"/>
+          <g class="d3-neur"><circle cx="548" cy="162" r="4"/><circle cx="590" cy="178" r="6"/><circle cx="630" cy="160" r="5"/><line x1="553" y1="164" x2="584" y2="176"/><line x1="596" y1="176" x2="625" y2="162"/></g>
+          <rect class="d3-bar" x="524" y="248" height="8" rx="4"/>
+          <text class="lbl sm" x="590" y="284" text-anchor="middle">BAĞIMSIZ OKUMA</text>
+        </g>
+        <g class="d3-slip" style="--i:0"><rect x="98"  y="318" width="64" height="30" rx="4" fill="#F0E7D4"/><text class="d3-sliptxt" x="130" y="338">−250bp</text></g>
+        <g class="d3-slip" style="--i:1"><rect x="328" y="318" width="64" height="30" rx="4" fill="#F0E7D4"/><text class="d3-sliptxt" x="360" y="338">−250bp</text></g>
+        <g class="d3-slip" style="--i:2"><rect x="558" y="318" width="64" height="30" rx="4" fill="#F0E7D4"/><text class="d3-sliptxt" x="590" y="338">−250bp</text></g>
+        <path class="drawn d3-merge" pathLength="1" d="M130 348 C 130 392, 300 400, 336 418" fill="none"/>
+        <path class="drawn d3-merge" pathLength="1" d="M360 348 L 360 410" fill="none"/>
+        <path class="drawn d3-merge" pathLength="1" d="M590 348 C 590 392, 420 400, 384 418" fill="none"/>
+        <g class="d3-gate">
+          <rect x="332" y="414" width="56" height="56" rx="8" transform="rotate(45 360 442)"/>
+          <text class="d3-check" x="360" y="452">✓</text>
+        </g>
+        <text class="lbl" x="428" y="448">MUTABAKAT KAPISI</text>
+      </svg>
+      <figcaption class="figcap">Odalar birbirine bağlı değildir — modeller birbirini görmeden okur.</figcaption>
+    </figure>
+    <figure class="fig">
+      <svg class="d3b" viewBox="0 0 720 220" role="img" aria-label="Jüri bölünürse dosya insan incelemesine gider">
+        <g class="d3-slip s"><rect x="60"  y="30" width="64" height="30" rx="4" fill="#F0E7D4"/><text class="d3-sliptxt" x="92"  y="50">−250bp</text></g>
+        <g class="d3-slip s"><rect x="180" y="30" width="64" height="30" rx="4" fill="#EADFC4"/><text class="d3-sliptxt warn" x="212" y="50">−300bp</text></g>
+        <g class="d3-slip s"><rect x="300" y="30" width="64" height="30" rx="4" fill="#F0E7D4"/><text class="d3-sliptxt" x="332" y="50">−250bp</text></g>
+        <path class="drawn d3b-in" pathLength="1" d="M92 60 C 92 100, 180 110, 196 128" fill="none"/>
+        <path class="drawn d3b-in" pathLength="1" d="M212 60 L 212 124" fill="none"/>
+        <path class="drawn d3b-in" pathLength="1" d="M332 60 C 332 100, 244 110, 228 128" fill="none"/>
+        <g class="d3b-gate"><rect x="188" y="128" width="48" height="48" rx="8" transform="rotate(45 212 152)"/><text class="d3b-q" x="212" y="161">?</text></g>
+        <path class="gap-line d3b-branch drawn" pathLength="1" d="M248 152 L 470 152" fill="none"/>
+        <g class="d3b-desk">
+          <rect x="478" y="126" width="130" height="54" rx="8"/>
+          <circle cx="500" cy="144" r="5"/>
+          <line x1="514" y1="144" x2="592" y2="144"/><line x1="514" y1="160" x2="576" y2="160"/>
+        </g>
+        <text class="lbl" x="543" y="204" text-anchor="middle">İNSAN İNCELEMESİ</text>
+      </svg>
+      <figcaption class="figcap">Bölünürlerse makine karar vermez — dosya insana gider.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- S4 · İSTASYON 03 · RESMÎ VERİ -->
+<section class="s-ist station" id="ist3">
+  <div class="s-wrap">
+    <div class="kicker">İSTASYON 03 — RESMÎ VERİ · KAPALI KAPAK</div>
+    <h2>Gerçekleşen rakamı kimse elle yazamaz.</h2>
+    <p>ELLE GİRİŞ kapağı gözünüzün önünde kapanır. Gerçekleşen değer doğrudan TÜİK/TCMB resmî
+      serisinden okunur — 11 Eylül basamağını çizen grafik, ana sayfadakiyle aynı dili konuşur.</p>
+    <figure class="fig">
+      <svg class="d4" viewBox="0 0 760 440" role="img" aria-label="Elle giriş kapalı; değer resmî seriden okunur">
+        <text class="lbl" x="130" y="102" text-anchor="middle">ELLE GİRİŞ</text>
+        <rect class="frame" x="30" y="120" width="200" height="180" rx="10"/>
+        <rect class="d4-shut top" x="38" y="128" width="184" height="82"/>
+        <rect class="d4-shut bot" x="38" y="210" width="184" height="82"/>
+        <g class="d4-locklbl">
+          <text class="d4-kapali" x="130" y="216" text-anchor="middle">KAPALI</text>
+          <path class="d4-lock" d="M122 232 v-5 a8 8 0 0 1 16 0 v5 m-20 0 h24 v16 h-24 z" fill="none"/>
+        </g>
+        <g class="d4-nopen">
+          <path d="M52 330 l14 -14 l6 6 l-14 14 z m16 -16 l4 4" fill="none"/>
+          <line x1="46" y1="336" x2="82" y2="308"/>
+          <text class="lbl sm" x="92" y="332">ELLE GİRİŞ YOK</text>
+        </g>
+        <line class="grid-line" x1="290" y1="120" x2="730" y2="120"/>
+        <line class="grid-line" x1="290" y1="172" x2="730" y2="172"/>
+        <line class="grid-line" x1="290" y1="224" x2="730" y2="224"/>
+        <line class="grid-line" x1="290" y1="276" x2="730" y2="276"/>
+        <line class="grid-line" x1="290" y1="328" x2="730" y2="328"/>
+        <g class="d4-pill"><rect x="290" y="76" width="286" height="26" rx="13"/><text x="433" y="93" text-anchor="middle">TCMB · POLİTİKA FAİZİ · RESMÎ SERİ</text></g>
+        <text class="axis-lbl" x="296" y="136">%43,0</text>
+        <text class="axis-lbl" x="296" y="248">%40,5</text>
+        <path class="series-line d4-series drawn" pathLength="1" d="M300 148 L 560 148 L 560 232 L 726 232" fill="none"/>
+        <circle class="d4-step" cx="560" cy="232" r="7"/>
+        <text class="lbl sm c" x="576" y="212">11 EYL 2025 · −250bp</text>
+        <path class="gap-line d4-arm drawn" pathLength="1" d="M560 240 C 540 300, 480 330, 452 344" fill="none"/>
+        <g class="d4-real">
+          <rect x="300" y="336" width="150" height="52" rx="6" fill="#F0E7D4"/>
+          <text class="d4-realtxt" x="314" y="358">GERÇEKLEŞEN</text>
+          <text class="d4-realval" x="314" y="380">%40,5</text>
+        </g>
+      </svg>
+      <figcaption class="figcap">Rakam seriden okunur; kapak kapalı, kalem yasak.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- S5 · İSTASYON 04 · DENETİM -->
+<section class="s-ist station" id="ist4">
+  <div class="s-wrap">
+    <div class="kicker">İSTASYON 04 — MAKİNE DENETİMİ · DÖRT LAMBA</div>
+    <h2>Dördü birden yeşil yanmadan hiçbir şey yayımlanmaz.</h2>
+    <p>Yayından hemen önce dört kural birden denetlenir: resmî seriyle uyum, aritmetik tutarlılık,
+      tarih önceliği ve sabit puan eşikleri. Bu denetimi bir insan değil, makine yapar — her yayında, istisnasız.</p>
+    <figure class="fig">
+      <svg class="d5" viewBox="0 0 760 420" role="img" aria-label="Dört denetim lambası ve açılan kapı">
+        <line class="d5-trav" x1="60" y1="140" x2="700" y2="140"/>
+        <g class="d5-lamp" style="--i:0"><circle cx="150" cy="140" r="10"/><text class="lbl sm" x="150" y="176" text-anchor="middle">SERİ UYUMU</text></g>
+        <g class="d5-lamp" style="--i:1"><circle cx="300" cy="140" r="10"/><text class="lbl sm" x="300" y="176" text-anchor="middle">ARİTMETİK</text></g>
+        <g class="d5-lamp" style="--i:2"><circle cx="450" cy="140" r="10"/><text class="lbl sm" x="450" y="176" text-anchor="middle">TARİH ÖNCELİĞİ</text></g>
+        <g class="d5-lamp" style="--i:3"><circle cx="600" cy="140" r="10"/><text class="lbl sm" x="600" y="176" text-anchor="middle">SABİT EŞİK</text></g>
+        <g class="d5-doorframe"><rect x="310" y="216" width="140" height="150" rx="8"/></g>
+        <rect class="d5-door l" x="318" y="224" width="60" height="134"/>
+        <rect class="d5-door r" x="382" y="224" width="60" height="134"/>
+        <g class="d5-pass"><rect x="352" y="258" width="56" height="66" rx="4" fill="#F0E7D4" opacity=".92"/><text class="d3-sliptxt" x="380" y="296">ZABIT</text></g>
+        <text class="lbl" x="380" y="396" text-anchor="middle">DÖRT YEŞİL → KAPI AÇILIR</text>
+      </svg>
+      <figcaption class="figcap">Dört kontrol lambası — kapı ancak dördü yeşilken açılır.</figcaption>
+    </figure>
+    <figure class="fig">
+      <svg class="d5b" viewBox="0 0 760 260" role="img" aria-label="Başarısız senaryo: yayın durur">
+        <text class="lbl warn2" x="60" y="36">BAŞARISIZ SENARYO</text>
+        <line class="d5-trav" x1="60" y1="90" x2="700" y2="90"/>
+        <g class="d5b-lamp ok"><circle cx="150" cy="90" r="10"/></g>
+        <g class="d5b-lamp ok"><circle cx="300" cy="90" r="10"/></g>
+        <g class="d5b-lamp fail"><circle cx="450" cy="90" r="10"/></g>
+        <g class="d5b-lamp ok"><circle cx="600" cy="90" r="10"/></g>
+        <text class="lbl sm" x="450" y="126" text-anchor="middle">ARİTMETİK TUTMADI</text>
+        <rect class="d5b-bar" x="120" y="150" width="520" height="14" rx="7"/>
+        <rect class="d5b-bar two" x="120" y="176" width="520" height="14" rx="7"/>
+        <text class="d5b-stamp" x="380" y="212" text-anchor="middle" transform="rotate(-4 380 206)">YAYIN DURDU — SİSTEM ŞÜPHEDE SUSAR</text>
+      </svg>
+      <figcaption class="figcap">Kural budur: dört kontrolden biri bile tutmazsa hiçbir şey yayımlanmaz.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- S6 · İSTASYON 05 · MÜHÜR -->
+<section class="s-ist station" id="ist5">
+  <div class="s-wrap">
+    <div class="kicker">İSTASYON 05 — MÜHÜR · HASSASİYET CETVELİ</div>
+    <h2>Sonuç ne olursa olsun kayda geçer.</h2>
+    <p>Eşikler sonuç görülmeden sabitlenmiştir: ±0,5 puan tam isabet, ±1,5 isabetli, ±3,0 kıl payı;
+      miktar çağrıları açıklanan adımı tam tutturmakla ölçülür. İşaretçi cetvele düşer, mühür preslenir.</p>
+    <figure class="fig">
+      <svg class="d6" viewBox="0 0 760 400" role="img" aria-label="Tolerans cetveli ve mühür presi">
+        <line class="d6-axis" x1="80" y1="250" x2="680" y2="250"/>
+        <rect class="d6-band b3" x="140" y="230" width="480" height="40"/>
+        <rect class="d6-band b2" x="260" y="230" width="240" height="40"/>
+        <rect class="d6-band b1" x="340" y="230" width="80" height="40"/>
+        <text class="lbl sm gold" x="380" y="222" text-anchor="middle">±0,5 TAM İSABET</text>
+        <text class="lbl sm c"    x="540" y="222" text-anchor="middle">±1,5 İSABETLİ</text>
+        <text class="lbl sm"      x="660" y="222" text-anchor="middle">±3,0 KIL PAYI</text>
+        <line x1="380" y1="238" x2="380" y2="262" stroke="#EAF0F6" stroke-width="2"/>
+        <text class="lbl sm" x="380" y="292" text-anchor="middle">GERÇEKLEŞEN</text>
+        <path class="d6-marker" d="M380 250 l-9 -12 l9 -12 l9 12 z"/>
+        <g class="d6-seal seal">
+          <circle class="seal-ring" cx="380" cy="140" r="52"/>
+          <circle class="seal-ring two" cx="380" cy="140" r="44"/>
+          <text class="d6-sealtop" x="380" y="118" text-anchor="middle">· TÜİK · TCMB ·</text>
+          <text class="seal-txt d6-sealtxt" x="380" y="150" text-anchor="middle">TAM İSABET</text>
+          <path d="M362 158 l10 10 l24 -26" fill="none" stroke="#00C08B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle class="d6-ink" cx="380" cy="140" r="52"/>
+          <circle class="d6-dot" cx="380" cy="140" r="5"/>
+        </g>
+        <rect class="d6-flash" x="0" y="0" width="760" height="400"/>
+        <g class="d6-miss">
+          <rect x="596" y="304" width="128" height="64" rx="6"/>
+          <text class="d6-misstamp" x="660" y="330" text-anchor="middle" transform="rotate(-6 660 328)">SAPMA</text>
+          <text class="lbl sm" x="660" y="354" text-anchor="middle">ARŞİVE GİRER</text>
+        </g>
+      </svg>
+      <figcaption class="figcap">Cetvel herkese aynı. Sapmalar da mühürlenir, arşivden çıkarılmaz.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- S7 · CANLI ARŞİV -->
+<section class="s-ist station" id="motor">
+  <div class="s-wrap">
+    <div class="kicker">CANLI ARŞİV — TEK MOTOR, İKİ EKRAN</div>
+    <h2>Bu bir rapor değil, işleyen bir motor.</h2>
+    <p>Her ay yeni resmî veri açıklandığında aynı hat kendiliğinden yeniden çalışır.
+      Bu site ve TV yayın paketi aynı motordan üretilir — ikisinin köşesinde aynı dosya numarası durur.</p>
+    <figure class="fig">
+      <svg class="d7" viewBox="0 0 760 460" role="img" aria-label="Aylık kadran, motor ve iki ekran">
+        <circle class="d7-dial" cx="170" cy="230" r="110"/>
+        <g class="d7-ticks">
+          <line x1="170" y1="120" x2="170" y2="134" class="on"/><line x1="225" y1="135" x2="218" y2="147" class="on"/>
+          <line x1="265" y1="175" x2="253" y2="182" class="on"/><line x1="280" y1="230" x2="266" y2="230" class="on"/>
+          <line x1="265" y1="285" x2="253" y2="278" class="on"/><line x1="225" y1="325" x2="218" y2="313" class="on"/>
+          <line x1="170" y1="340" x2="170" y2="326" class="on"/><line x1="115" y1="325" x2="122" y2="313" class="on"/>
+          <line x1="75"  y1="285" x2="87"  y2="278"/><line x1="60"  y1="230" x2="74"  y2="230"/>
+          <line x1="75"  y1="175" x2="87"  y2="182"/><line x1="115" y1="135" x2="122" y2="147"/>
+        </g>
+        <text class="axis-lbl" x="170" y="110" text-anchor="middle">OCA</text>
+        <text class="axis-lbl" x="296" y="234">NİS</text>
+        <text class="axis-lbl" x="170" y="362" text-anchor="middle">TEM</text>
+        <text class="axis-lbl" x="30" y="234">EKİ</text>
+        <line class="d7-arm" x1="170" y1="230" x2="170" y2="132"/>
+        <circle cx="170" cy="230" r="5" fill="#E7B44C"/>
+        <text class="lbl" x="170" y="392" text-anchor="middle">HER AY · RESMÎ VERİ GÜNÜ</text>
+        <path class="drawn d7-feed" pathLength="1" d="M284 230 L 388 230" fill="none"/>
+        <g class="d7-motor">
+          <rect x="390" y="180" width="100" height="100" rx="14"/>
+          <circle cx="440" cy="222" r="20" fill="none" stroke="#00C08B" stroke-width="2"/>
+          <circle cx="440" cy="222" r="14" fill="none" stroke="#00C08B" stroke-width="1" stroke-dasharray="2 4"/>
+          <path d="M432 222 l6 6 l12 -13" fill="none" stroke="#00C08B" stroke-width="2" stroke-linecap="round"/>
+          <text class="lbl sm" x="440" y="264" text-anchor="middle">ON RECORD</text>
+          <text class="lbl sm" x="440" y="278" text-anchor="middle">MOTORU</text>
+        </g>
+        <path class="drawn d7-branch" pathLength="1" d="M490 210 C 530 190, 540 140, 556 122" fill="none"/>
+        <path class="drawn d7-branch" pathLength="1" d="M490 250 C 530 270, 540 310, 556 326" fill="none"/>
+        <g class="d7-site">
+          <rect class="frame" x="558" y="50" width="176" height="128" rx="8"/>
+          <circle cx="572" cy="64" r="3"/><circle cx="582" cy="64" r="3"/><circle cx="592" cy="64" r="3"/>
+          <line x1="574" y1="94"  x2="718" y2="94"/><line x1="574" y1="114" x2="700" y2="114"/>
+          <line x1="574" y1="134" x2="712" y2="134"/><line x1="574" y1="154" x2="688" y2="154"/>
+          <text class="lbl sm" x="646" y="196" text-anchor="middle">SİTE · SİCİL</text>
+          <text class="d7-no" x="726" y="72" text-anchor="end">OR-2025-0904</text>
+        </g>
+        <g class="d7-tv">
+          <rect class="frame tv" x="558" y="286" width="176" height="104" rx="8"/>
+          <circle class="d7-live" cx="574" cy="302" r="4"/>
+          <text class="lbl sm" x="646" y="416" text-anchor="middle">TV YAYIN PAKETİ</text>
+          <text class="d7-no" x="726" y="308" text-anchor="end">OR-2025-0904</text>
+        </g>
+      </svg>
+      <figcaption class="figcap">Tek motor, iki ekran — köşelerde aynı dosya numarası.</figcaption>
+    </figure>
+    <a class="how-cta" href="../#defter">Bu hattan geçmiş her kaydı görün — sapmalar dahil → Sicil</a>
+  </div>
+</section>
+
+<!-- S8 · YAPIMCI PLAKASI -->
+<section class="s-plaque station" id="plaka">
+  <div class="s-wrap">
+    <div class="plaque">
+      <i class="led" aria-hidden="true"></i>
+      <h3>Bu motor tek kişi tarafından tasarlandı ve inşa edildi.</h3>
+      <svg class="paraf" viewBox="0 0 220 46" aria-hidden="true">
+        <path class="paraf-line drawn" pathLength="1" d="M8 34 C 40 6, 62 44, 92 22 C 112 8, 128 36, 152 24 C 172 14, 192 26, 212 18" fill="none"/>
+      </svg>
+      <p class="credit">Sistem tasarımı ve mühendislik — Ömer Kılıçarslan ·
+        <a href="mailto:okilicarslan@hotmail.com">okilicarslan@hotmail.com</a></p>
+    </div>
+    <div class="backlink"><a href="../">← On Record ana sayfa</a></div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wordmark small"><span>ON</span> RECORD</div>
+  <div class="foot-note">Dr. İnanç Sözer · Söylem × Gerçekleşen · Resmî TÜİK/TCMB verisiyle denetlendi</div>
+</footer>
+
+<script src="sistem.js"></script>
+</body>
+</html>

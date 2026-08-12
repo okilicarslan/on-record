@@ -34,10 +34,14 @@
     const hx = X(n - 1);
     const svg = el("svg", { class: bcast ? "or-svg bcast" : "or-svg", viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: "xMidYMid meet" });
 
-    // grid + y labels
-    for (let g = 0; g <= 3; g++) { const yv = lo + (hi - lo) * g / 3, y = Y(yv);
-      svg.appendChild(el("line", { class: "grid-line", x1: padL, x2: W - padR + 18, y1: y, y2: y }));
-      const t = el("text", { class: "axis-lbl", x: padL - 8, y: y + 4, "text-anchor": "end" }); t.textContent = trNum(Math.round(yv)); svg.appendChild(t); }
+    // grid + y labels — nice-number steps ({1,2,2.5,5}·10^k), ticks on step multiples
+    { const rawStep = (hi - lo) / 4, mag = Math.pow(10, Math.floor(Math.log10(rawStep)));
+      let step = 10 * mag; for (const m of [1, 2, 2.5, 5]) if (rawStep <= m * mag) { step = m * mag; break; }
+      const start = Math.ceil(lo / step) * step;
+      for (let i = 0; start + i * step <= hi + step * 1e-6; i++) { const yv = start + i * step, y = Y(yv);
+        svg.appendChild(el("line", { class: "grid-line", x1: padL, x2: W - padR + 18, y1: y, y2: y }));
+        const t = el("text", { class: "axis-lbl", x: padL - 8, y: y + 4, "text-anchor": "end" });
+        t.textContent = ind === "usdtry" ? trNum(yv.toFixed(1)) : trNum(Math.round(yv)); svg.appendChild(t); } }
     // x labels (first + last)
     [0, n - 1].forEach(i => { const t = el("text", { class: "axis-lbl", x: X(i), y: H - 14, "text-anchor": i ? "middle" : "start" }); t.textContent = prd(pts[i].t); svg.appendChild(t); });
     // title
@@ -112,15 +116,25 @@
       if (call.realised_num != null) {
         const rc = el("circle", { cx: hx, cy: Y(call.realised_num), r: 6.5, fill: VCOLOR[call.verdict], stroke: "#0A1730", "stroke-width": 2, opacity: 0 });
         const rl = el("text", { class: "real-lbl", x: hx + 14, y: Y(call.realised_num) + 4, fill: VCOLOR[call.verdict], opacity: 0 }); rl.textContent = "Gerçekleşen: " + fmt(ind, call.realised_num);
+        // bullseye-tight cases: star and dot coincide — stack his label above the realised one
+        if (Math.abs(fY - Y(call.realised_num)) < 30) {
+          fcl.setAttribute("x", hx + 14); fcl.setAttribute("text-anchor", "start"); fcl.setAttribute("y", Y(call.realised_num) - 22);
+        }
         let gap = null;
         if (call.forecast_num != null && Math.abs(call.realised_num - call.forecast_num) > 0.2)
           gap = el("line", { class: "gap-line", x1: hx, x2: hx, y1: Y(call.forecast_num), y2: Y(call.realised_num), stroke: VCOLOR[call.verdict], opacity: 0 });
         if (gap) svg.appendChild(gap);
         svg.appendChild(rc); svg.appendChild(rl); realEls = [rc, rl, gap].filter(Boolean);
       }
-      // seal — bullseye only (honest: DOĞRULANDI only where he nailed it exactly)
-      if (call.verdict === "bullseye" && call.realised_num != null)
-        { seal = makeSeal(hx, Y(call.realised_num)); svg.appendChild(seal); }
+      // seal — bullseye only (honest: DOĞRULANDI only where he nailed it exactly),
+      // stamped into the quiet corner: the vertical half the series does NOT enter from,
+      // so it never sits on the line, the labels or the data point
+      if (call.verdict === "bullseye" && call.realised_num != null) {
+        const y0 = Y(pts[0].v);
+        const cxq = padL + 92;
+        const cyq = y0 < padT + plotH / 2 ? padT + plotH - 64 : padT + 74;
+        seal = makeSeal(cxq + 48, cyq + 54); svg.appendChild(seal);
+      }
     }
 
     function animate() {

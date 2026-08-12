@@ -9,6 +9,10 @@
 <link rel="stylesheet" href="styles.css" />
 <style>
   /* Export stage: full-bleed broadcast/social frames. Reuses styles.css tokens + chart classes. */
+  /* PIN: delivered media pack was rendered with these values — keeps future regens byte-identical
+     even though the live site refined them (council 2026-08-12). */
+  :root{--line:#20335c}
+  .chip{font-size:11px;padding:4px 10px}
   html,body{margin:0;background:#050d1e;overflow:hidden}
   #stage{position:relative;overflow:hidden;display:flex;flex-direction:column;color:var(--ink);
     font-family:var(--body);
